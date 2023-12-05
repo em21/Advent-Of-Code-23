@@ -1,39 +1,62 @@
 from utilities.parsing import *
 
-input_file = '..//inputs//day2mini.txt'
+input_file = '..//inputs//day2.txt'
 
-
-def main_fun():
-    bag_contents = {"red": 12, "green": 13, "blue": 14}
-    games = parse_input()
 
 def max_cubes_shown(colour, game):
     current_max = 0
-    instances_of_colour = game.count(colour)
+    game_list = game.split(",")
 
-    index = game.find(colour)
+    for cubes in game_list:
+        number_of_cubes = int(cubes[:cubes.find(" ")])
+        colour_of_cubes = cubes[cubes.find(" "):]
 
-    print(game[index-2])
-    return game[index-2]
+        if colour == colour_of_cubes.strip():
+            if current_max < number_of_cubes:
+                current_max = number_of_cubes
 
-def parse_input():
-    game_list =[]
+    return current_max
 
-    str_list = read_in_file_to_str_list(input_file)
-    print(str_list)
 
-    for game in str_list:
+def is_possible(game_dictionary):
+    bag_contents = {"red": 12, "green": 13, "blue": 14}
+
+    red_possible = bag_contents["red"] >= game_dictionary["red"]
+    green_possible = bag_contents["green"] >= game_dictionary["green"]
+    blue_possible = bag_contents["blue"] >= game_dictionary["blue"]
+
+    return red_possible and green_possible and blue_possible
+
+
+def power_set(game_dictionary):
+    return game_dictionary["red"] * game_dictionary["green"] * game_dictionary["blue"]
+
+
+def main_fun():
+    possible_count = 0
+
+    file1 = open(input_file, 'r')
+    lines = file1.readlines()
+
+    for line in lines:
+        game_id = int(line[line.find(" "): line.find(":")])
+        index = line.find(":")
+        game = line[index + 1:].strip().replace(", ", ",").replace("; ", ",")
+
         game_dictionary = {
-            "id": game[5],
+            "id": game_id,
             "blue": max_cubes_shown("blue", game),
             "red": max_cubes_shown("red", game),
             "green": max_cubes_shown("green", game)
         }
 
-        game_list.append(game_dictionary)
+        possible_count += power_set(game_dictionary)
 
-    print(game_list)
-    return game_list
+        # if is_possible(game_dictionary):
+        #
+        #     possible_count += game_id
+
+    return possible_count
 
 
-parse_input()
+print(main_fun())
