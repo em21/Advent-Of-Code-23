@@ -1,9 +1,9 @@
-input_file = '..//inputs//day4.txt'
+input_file = ..//inputs//day4.txt
 
 
 def main_fun():
     total_point = 0
-    file1 = open(input_file, 'r')
+    file1 = open(input_file, r)
     lines = file1.readlines()
 
     for line in lines:
